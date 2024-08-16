@@ -62,7 +62,7 @@ public class RequestResponseLoggingMiddleware
         var logObject = new
         {
             statusCode = response.StatusCode,
-            responseBody = !string.IsNullOrEmpty(responseBody) ? JsonConvert.DeserializeObject(responseBody) : new {},
+            responseBody = !string.IsNullOrEmpty(responseBody) ? JsonConvert.DeserializeObject(JsonConvert.SerializeObject(responseBody)) : new {},
             method = context.Request.Method,
             ip = context.Connection.RemoteIpAddress?.ToString(),
             path = context.Request.Path,
