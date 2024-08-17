@@ -1,0 +1,6 @@
+@Samarootan_Api_HostAddress = http://localhost:5109
+
+GET {{Samarootan_Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

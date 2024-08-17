@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>DotNet_Microservice_Template</RootNamespace>
+    <RootNamespace>Samarootan_Api</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
