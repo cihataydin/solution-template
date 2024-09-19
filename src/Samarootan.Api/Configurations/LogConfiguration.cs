@@ -1,24 +1,24 @@
 ﻿using Serilog;
 using Serilog.Events;
-using Middlewares;
+using Serilog.Sinks.SystemConsole.Themes;
 
-namespace Samarootan_Api.Configuration
+namespace Samarootan.Api.Configuration
 {
-    public  static class LogConfiguration
+    public static class LogConfiguration
     {
-            public static void UseLogConfiguration(this IApplicationBuilder builder)
-            {
-                Log.Logger = new LoggerConfiguration()
-           .MinimumLevel.Debug()
-           .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-           .Enrich.FromLogContext()
-           .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-           .WriteTo.File("logs/microservice-template.txt",
-               rollingInterval: RollingInterval.Day,
-               outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-            .CreateLogger();
-            }
-        
+        public static void Initialize()
+        {
+            const string tamplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
+
+            Log.Logger = new LoggerConfiguration()
+       .MinimumLevel.Debug()
+       .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+       .Enrich.FromLogContext()
+       .WriteTo.Console(outputTemplate: tamplate, theme: AnsiConsoleTheme.Sixteen)
+       .WriteTo.File("logs/microservice-template.txt",
+           rollingInterval: RollingInterval.Day,
+           outputTemplate: tamplate)
+        .CreateLogger();
+        }
     }
-    
 }
