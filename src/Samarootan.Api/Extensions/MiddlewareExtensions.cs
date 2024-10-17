@@ -1,11 +1,11 @@
-namespace Extensions
+namespace Samarootan.Api.Extensions
 {
-    using Middlewares;
+    using Samarootan.Api.Middlewares;
 
     /// <summary>
-    /// Represents the request response logging middleware extensions.
+    /// Represents the middleware extensions.
     /// </summary>
-    public static class RequestResponseLoggingMiddlewareExtensions
+    public static class MiddlewareExtensions
     {
         /// <summary>
         /// Uses the request response logging middleware.

@@ -1,4 +1,4 @@
-namespace Middlewares
+namespace Samarootan.Api.Middlewares
 {
     using System.Text;
     using Newtonsoft.Json;

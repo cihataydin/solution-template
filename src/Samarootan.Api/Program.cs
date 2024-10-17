@@ -1,6 +1,6 @@
 #pragma warning disable SA1200 // Using directive should appear within a namespace declaration
-using Extensions;
-using Samarootan.Api.Configuration;
+using Samarootan.Api.Configurations;
+using Samarootan.Api.Extensions;
 using Serilog;
 #pragma warning restore SA1200 // Using directive should appear within a namespace declaration
 

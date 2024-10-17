@@ -1,4 +1,4 @@
-﻿namespace Samarootan.Api.Configuration
+﻿namespace Samarootan.Api.Configurations
 {
     using Serilog;
     using Serilog.Events;
