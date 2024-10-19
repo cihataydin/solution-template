@@ -1,6 +1,8 @@
+#pragma warning disable SA1200 // Using directive should appear within a namespace declaration
+using Samarootan.Api.Configurations;
+using Samarootan.Api.Extensions;
 using Serilog;
-using Middlewares;
-using Samarootan.Api.Configuration;
+#pragma warning restore SA1200 // Using directive should appear within a namespace declaration
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,18 +29,16 @@ app.UseHttpsRedirection();
 
 var summaries = new[]
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching",
 };
 
 app.MapGet("/weatherforecast", () =>
 {
     var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
+        new WeatherForecast(
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
+            summaries[Random.Shared.Next(summaries.Length)]))
         .ToArray();
     return forecast;
 })
@@ -47,7 +47,10 @@ app.MapGet("/weatherforecast", () =>
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+record WeatherForecast(DateOnly date, int temperatureC, string summary)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    /// <summary>
+    /// Gets the temperature in Fahrenheit.
+    /// </summary>
+    public int TemperatureF => 32 + (int)(this.temperatureC / 0.5556);
 }
