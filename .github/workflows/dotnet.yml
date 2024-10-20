@@ -38,7 +38,12 @@ jobs:
       run: |
         docker-compose -f ./src/Samarootan.Api/docker-compose.yml run --rm api dotnet test --no-restore --verbosity detailed
 
+    # Step 6: Get container logs if tests fail
+    - name: Get container logs on failure
+      if: failure()
+      run: |
+        docker-compose -f ./src/Samarootan.Api/docker-compose.yml logs api
 
-    # Step 6: Clean up
+    # Step 7: Clean up
     - name: Stop and remove containers after tests
       run: docker-compose -f ./src/Samarootan.Api/docker-compose.yml down
