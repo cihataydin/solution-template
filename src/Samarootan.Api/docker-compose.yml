@@ -10,5 +10,5 @@ services:
     ports:
       - "8080:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT = ${ENVIRONMENT:?Error}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT:?Error}
     restart: always
