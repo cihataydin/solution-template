@@ -1,4 +1,4 @@
-name: CI with Docker Compose
+name: CI-CD with Docker Compose
 
 on:
   push:
@@ -21,6 +21,13 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v2
 
+    # Step 3: Load environment variables from env.docker file
+    - name: Load environment variables from env.docker
+      run: |
+        set -a
+        source src/Samarootan.Api/.env.docker
+        set +a
+
     # Step 3: Install Docker Compose
     - name: Install Docker Compose
       run: |
@@ -31,7 +38,7 @@ jobs:
     # Step 4: Build and run the Docker Compose setup
     - name: Build and run Docker Compose
       run: |
-        docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml up --build -d
+        docker-compose -f ./src/Samarootan.Api/docker-compose.yml up --build -d
 
     # Step 5: Clean up
     - name: Stop and remove containers after tests
