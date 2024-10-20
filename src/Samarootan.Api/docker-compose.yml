@@ -1,13 +1,14 @@
 version: '3.8'
 
 services:
-  app:
-    container_name: dotnet-web-api
+  api:
+    container_name: api
+    image: ${HUB_IMAGE:?Error}
     build:
       context: .
       dockerfile: Dockerfile 
     ports:
       - "8080:80"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT:?Error}
     restart: always
