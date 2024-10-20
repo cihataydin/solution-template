@@ -36,7 +36,7 @@ jobs:
     # Step 5: Run tests inside the container (replace <container_name> with the correct container name)
     - name: Run tests
       run: |
-        docker exec -t <container_name> dotnet test --no-restore --verbosity normal
+        docker exec -t dotnet-web-api dotnet test --no-restore --verbosity normal
 
     # Step 6: Stop and remove containers after tests are complete
     - name: Stop and remove containers
