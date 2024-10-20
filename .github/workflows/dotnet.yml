@@ -37,15 +37,17 @@ jobs:
     - name: Stop and remove containers after tests
       run: docker-compose -f ./src/Samarootan.Api/docker-compose.yml down
 
+    # Step 6: Log in to Docker Hub
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+    # Step 7: Build and push Docker images with Docker Compose
     - name: Build and push Docker images with Docker Compose
       run: |
         docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml build
         docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml push
     
-    # Step 6: Trigger deployment to Render
+    # Step 8: Trigger Render Deployment
     - name: Trigger Render Deployment
       if: success()
       run: |

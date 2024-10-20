@@ -3,12 +3,12 @@ version: '3.8'
 services:
   api:
     container_name: api
-    image: cihataydin/api:latest
+    image: ${HUB_IMAGE:?Error}
     build:
       context: .
       dockerfile: Dockerfile 
     ports:
       - "8080:80"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
+      - ASPNETCORE_ENVIRONMENT = ${ENVIRONMENT:?Error}
     restart: always
