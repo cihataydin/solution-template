@@ -19,7 +19,7 @@ app.UseRequestResponseLogging();
 LogConfiguration.Initialize();
 
 // Configure the HTTP request pipeline.
-if (true)
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
