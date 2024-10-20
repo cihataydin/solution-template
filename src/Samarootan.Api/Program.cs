@@ -22,12 +22,7 @@ LogConfiguration.Initialize();
 if (true)
 {
     app.UseSwagger();
-    app.UseSwaggerUI(
-        o =>
-        {
-            o.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            o.RoutePrefix = string.Empty;
-        });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
