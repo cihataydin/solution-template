@@ -27,6 +27,7 @@ jobs:
         set -a
         source src/Samarootan.Api/.env.docker
         set +a
+      shell: bash
 
     # Step 3: Install Docker Compose
     - name: Install Docker Compose
