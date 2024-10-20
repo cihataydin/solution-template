@@ -28,16 +28,16 @@ jobs:
         sudo chmod +x /usr/local/bin/docker-compose
         docker-compose --version  # Verify Docker Compose installation
 
-    # Step 4: Build and run Docker Compose
-    - name: Build and run Docker Compose
+    # Step 4: Build and run the Docker Compose setup (without running the app yet)
+    - name: Build Docker Compose (Build only, no test yet)
       run: |
-        docker-compose -f ./src/Samarootan.Api/docker-compose.yml up --build -d
+        docker-compose -f ./src/Samarootan.Api/docker-compose.yml build
 
-    # Step 5: Run tests inside the container (replace <container_name> with the correct container name)
-    - name: Run tests
+    # Step 5: Run tests in a dedicated build container (SDK installed)
+    - name: Run tests in Docker
       run: |
-        docker exec -t dotnet-web-api dotnet test --no-restore --verbosity normal
+        docker-compose -f ./src/Samarootan.Api/docker-compose.yml run --rm dotnet-web-api dotnet test --no-restore --verbosity normal
 
-    # Step 6: Stop and remove containers after tests are complete
-    - name: Stop and remove containers
+    # Step 6: Clean up
+    - name: Stop and remove containers after tests
       run: docker-compose -f ./src/Samarootan.Api/docker-compose.yml down
