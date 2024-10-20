@@ -31,7 +31,7 @@ jobs:
     # Step 4: Build and run the Docker Compose setup
     - name: Build and run Docker Compose
       run: |
-        docker-compose -f ./src/Samarootan.Api/docker-compose.yml up --build -d
+        docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml up --build -d
 
     # Step 5: Clean up
     - name: Stop and remove containers after tests
@@ -42,8 +42,8 @@ jobs:
 
     - name: Build and push Docker images with Docker Compose
       run: |
-        docker-compose -f ./src/Samarootan.Api/docker-compose.yml build
-        docker-compose -f ./src/Samarootan.Api/docker-compose.yml push
+        docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml build
+        docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml push
     
     # Step 6: Trigger deployment to Render
     - name: Trigger Render Deployment
