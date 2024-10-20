@@ -35,7 +35,7 @@ jobs:
 
     # Step 5: Clean up
     - name: Stop and remove containers after tests
-      run: docker-compose -f ./src/Samarootan.Api/docker-compose.yml down
+      run: docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml down
 
     # Step 6: Log in to Docker Hub
     - name: Log in to Docker Hub
