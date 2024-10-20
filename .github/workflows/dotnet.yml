@@ -36,7 +36,8 @@ jobs:
     # Step 5: Run tests in a dedicated build container (SDK installed)
     - name: Run tests in Docker
       run: |
-        docker-compose -f ./src/Samarootan.Api/docker-compose.yml run --rm api dotnet test --no-restore --verbosity normal
+        docker-compose -f ./src/Samarootan.Api/docker-compose.yml run --rm api dotnet test --no-restore --verbosity detailed
+
 
     # Step 6: Clean up
     - name: Stop and remove containers after tests
