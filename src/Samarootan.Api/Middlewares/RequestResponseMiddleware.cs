@@ -2,6 +2,7 @@ namespace Samarootan.Api.Middlewares
 {
     using System.Text;
     using Newtonsoft.Json;
+    using Samarootan.Api.Constants;
     using Serilog;
 
     /// <summary>
@@ -10,14 +11,19 @@ namespace Samarootan.Api.Middlewares
     public class RequestResponseLoggingMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly IConfiguration configuration;
+
+        private bool useJsonFormat;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestResponseLoggingMiddleware"/> class.
         /// </summary>
         /// <param name="next">The request delegate.</param>
-        public RequestResponseLoggingMiddleware(RequestDelegate next)
+        /// <param name="configuration">The configuration.</param>
+        public RequestResponseLoggingMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             this.next = next;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -27,6 +33,7 @@ namespace Samarootan.Api.Middlewares
         /// <returns>The task.</returns>
         public async Task Invoke(HttpContext context)
         {
+            this.useJsonFormat = this.configuration.GetValue<bool>(ConfigurationConstant.UseJsonFormat);
             await this.LogRequest(context);
 
             var originalBodyStream = context.Response.Body;
@@ -58,7 +65,7 @@ namespace Samarootan.Api.Middlewares
                 traceId = context.TraceIdentifier,
             };
 
-            Log.Information("[RequestLoggerMiddleware] {Request}", JsonConvert.SerializeObject(logObject));
+            Log.Information("{Context} {Request}", this.useJsonFormat ? string.Empty : "[RequestLoggerMiddleware]", JsonConvert.SerializeObject(logObject));
         }
 
         private async Task LogResponse(HttpContext context)
@@ -80,7 +87,7 @@ namespace Samarootan.Api.Middlewares
                 traceId = context.TraceIdentifier,
             };
 
-            Log.Information("[ResponseLoggerMiddleware] {Response}", JsonConvert.SerializeObject(logObject));
+            Log.Information("{Context} {Response}", this.useJsonFormat ? string.Empty : "[ResponseLoggerMiddleware]", JsonConvert.SerializeObject(logObject));
         }
 
         private async Task<string> GetRequestBody(HttpRequest request)
