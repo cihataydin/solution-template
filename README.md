@@ -5,7 +5,10 @@ A template for building .NET microservices with best practices and common patter
 `docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml up --build -d`
 
 ## Docker Local Host Url
-[swagger-url](http://localhost:8080/swagger)
+[Swagger Url](http://localhost:8080/swagger)
 
-## Development Url
-[render-url](https://api-0oqs.onrender.com)
+## Render Deployment
+Render may be in sleep mode on the first request. You may need to wait for a few seconds. [Live Url](https://api-0oqs.onrender.com/swagger)
+
+## Docker Monitoring Tool
+[Click for Guide](dockerfiles/monitoring/GUIDE.md)
