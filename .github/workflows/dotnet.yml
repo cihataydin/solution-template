@@ -27,6 +27,12 @@ jobs:
         sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
         docker-compose --version  # Verify Docker Compose installation
+    
+    # Step 3.1: Create network and volume (with error checks)
+    - name: Create Docker network and volume
+      run: |
+        docker network inspect prometheus-net >/dev/null 2>&1 || docker network create prometheus-net
+        docker volume inspect shared-logs >/dev/null 2>&1 || docker volume create shared-logs
 
     # Step 4: Build and run the Docker Compose setup
     - name: Build and run Docker Compose
@@ -43,7 +49,7 @@ jobs:
 
     # Step 7: Build and push Docker images with Docker Compose
     - name: Build and push Docker images with Docker Compose
-      run: |
+      run: | 
         docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml build
         docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml push
     
