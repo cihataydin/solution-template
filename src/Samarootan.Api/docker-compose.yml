@@ -11,4 +11,16 @@ services:
       - "8080:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT:?Error}
+    networks:
+      - prometheus-net
+    volumes:
+      - shared-logs:/app/logs
     restart: always
+
+networks:
+  prometheus-net:
+    external: true
+
+volumes:
+  shared-logs:
+    external: true

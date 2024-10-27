@@ -1,0 +1,72 @@
+version: '3.7'
+
+services:
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - loki
+      - prometheus
+    networks:
+      - grafana-net
+    restart: always
+
+  loki:
+    image: grafana/loki:2.8.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - grafana-net
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - prometheus-net
+      - grafana-net
+    restart: always
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    container_name: promtail
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
+      - ${APP_LOGS:-shared-logs}:/var/log
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    restart: always
+    networks:
+      - grafana-net
+    depends_on:
+      - loki
+
+volumes:
+  grafana-data:
+  loki-data:
+  shared-logs:
+    external: true
+
+networks:
+  grafana-net:
+    driver: bridge
+  prometheus-net:
+    external: true

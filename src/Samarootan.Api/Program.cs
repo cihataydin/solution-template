@@ -1,4 +1,5 @@
 #pragma warning disable SA1200 // Using directive should appear within a namespace declaration
+using Prometheus;
 using Samarootan.Api.Configurations;
 using Samarootan.Api.Extensions;
 using Serilog;
@@ -15,15 +16,13 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 
-app.UseRequestResponseLogging();
-LogConfiguration.Initialize();
+app.UseHttpMetrics();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseRequestResponseLogging();
+LogConfiguration.Initialize(builder.Configuration);
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -44,6 +43,8 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+app.MapMetrics();
 
 app.Run();
 
