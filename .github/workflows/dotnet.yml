@@ -44,6 +44,8 @@ jobs:
     # Step 7: Build and push Docker images with Docker Compose
     - name: Build and push Docker images with Docker Compose
       run: |
+        docker network create prometheus-net
+        docker volume create shared-logs
         docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml build
         docker-compose --env-file src/Samarootan.Api/.env.docker -f ./src/Samarootan.Api/docker-compose.yml push
     
