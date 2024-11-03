@@ -1,10 +1,10 @@
 #pragma warning disable SA1200 // Using directive should appear within a namespace declaration
 using Asp.Versioning;
 using Asp.Versioning.Builder;
+using Microservice.Api.Configurations;
+using Microservice.Api.Extensions;
 using Microsoft.OpenApi.Models;
 using Prometheus;
-using Samarootan.Api.Configurations;
-using Samarootan.Api.Extensions;
 using Serilog;
 #pragma warning restore SA1200 // Using directive should appear within a namespace declaration
 

@@ -1,6 +1,6 @@
-﻿namespace Samarootan.Api.Configurations
+﻿namespace Microservice.Api.Configurations
 {
-    using Samarootan.Api.Constants;
+    using Microservice.Domain.Constants;
     using Serilog;
     using Serilog.Events;
     using Serilog.Formatting.Json;

@@ -8,7 +8,7 @@
 
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <RootNamespace>Samarootan.Api</RootNamespace>
+    <RootNamespace>Microservice</RootNamespace>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 

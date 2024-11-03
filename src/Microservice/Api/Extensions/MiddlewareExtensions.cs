@@ -1,6 +1,6 @@
-namespace Samarootan.Api.Extensions
+namespace Microservice.Api.Extensions
 {
-    using Samarootan.Api.Middlewares;
+    using Microservice.Api.Middlewares;
 
     /// <summary>
     /// Represents the middleware extensions.

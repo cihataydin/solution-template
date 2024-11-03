@@ -1,4 +1,4 @@
-namespace Samarootan.Api.Constants
+namespace Microservice.Domain.Constants
 {
     /// <summary>
     /// Represents the configuration constant.
