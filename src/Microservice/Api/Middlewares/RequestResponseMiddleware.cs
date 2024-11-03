@@ -1,8 +1,8 @@
-namespace Samarootan.Api.Middlewares
+namespace Microservice.Api.Middlewares
 {
     using System.Text;
+    using Microservice.Domain.Constants;
     using Newtonsoft.Json;
-    using Samarootan.Api.Constants;
     using Serilog;
 
     /// <summary>

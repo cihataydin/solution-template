@@ -2,7 +2,7 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samarootan.Api", "src\Samarootan.Api\Samarootan.Api.csproj", "{AC3F0F1B-31CD-47D4-953F-FC970261B9FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice", "src\Microservice\Microservice.csproj", "{AC3F0F1B-31CD-47D4-953F-FC970261B9FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
