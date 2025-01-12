@@ -1,0 +1,7 @@
+{
+    "scripts": {
+        "build": "dotnet build --project ./src/Microservice/Microservice.csproj --environment Development",
+        "start": "dotnet run --project ./src/Microservice/Microservice.csproj --environment Development",
+        "watch": "dotnet watch run --project ./src/Microservice/Microservice.csproj --environment Development"
+    }
+}
