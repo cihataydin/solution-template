@@ -38,7 +38,7 @@ docker network create prometheus-net
 
 ### Docker API Setup
 #### Loki Configuration
-- Remove setting from monitoring enviroment file `APP_LOGS=./../../src/Microservice/logs`
+- Remove setting from monitoring environment file `APP_LOGS=./../../src/Microservice/logs`
 - To enable human‑readable JSON in the dashboard, ensure that the following setting appears in both your appsettings.Development.json and appsettings.Production.json files 
 ```
 "UseJsonFormat": true|false
