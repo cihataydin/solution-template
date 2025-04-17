@@ -1,6 +1,6 @@
 # Monitoring Tools 
 
-Tools for tracing the service.
+Tools for tracing the application.
 
 ## Overview
 
@@ -17,12 +17,34 @@ This stack provides a comprehensive solution for monitoring metrics and logs. Be
 Together, these tools provide a unified platform for visualizing and analyzing your application's performance metrics and logs.
 
 
-## Initialize
+## Initializing the Monitoring Tool
+Select the Local or Docker API setup to proceed
+### Local API Setup
+#### Loki Configuration
+- In your monitoring environment file, add 
+```
+APP_LOGS=./../../src/Microservice/logs
+```
+- To enable human‑readable JSON in the dashboard, ensure that the following setting appears in both your appsettings.Development.json and appsettings.Production.json files 
+```
+"UseJsonFormat": true|false
+```
+#### Prometheus Configuration
+- Before running docker-compose up, ensure the Docker network prometheus-net exists. Create it with
+```
+docker network create prometheus-net
+```
+- If you skip this step, docker-compose up will fail due to the missing network.
 
-The service can be run using the Docker Compose file immediately. However, if the Dockerized API is intended to be used for tracing, it is necessary to first create the required volume and network. Since there are separate Docker Compose files, the network and volume must be shared between them. Also the `APP_LOGS` parameter in the `.env` file should be commented out. This is necessary to ensure the service uses the created volume for log storage.
-
-If you have started the application locally using `dotnet run` without Docker, you may skip this step and directly run the Docker Compose file. Simply ensure that the `APP_LOGS` parameter in the `.env` file is correctly set to the appropriate path.
-
+### Docker API Setup
+#### Loki Configuration
+- Remove setting from monitoring environment file `APP_LOGS=./../../src/Microservice/logs`
+- To enable human‑readable JSON in the dashboard, ensure that the following setting appears in both your appsettings.Development.json and appsettings.Production.json files 
+```
+"UseJsonFormat": true|false
+```
+#### Prometheus Configuration
+- Before running docker-compose up, ensure the Docker network prometheus-net and volume shared-logs exists. Create these with
 ```
 docker network create prometheus-net
 docker volume create shared-logs
@@ -38,7 +60,7 @@ docker-compose up -d
 
 Use the following link to access the Grafana interface: [http://localhost:3000/login](http://localhost:3000/login). The default Grafana username and password are both `admin`.
 
-In the **Data Sources** section, register Prometheus and Loki. For Loki, use the URL: `http://loki:3100`, and for Prometheus, use: `http://prometheus:9090`. After entering the URLs, click **Save & Test** for each source. You can now create dashboards, view logs, monitor performance, and more. Enjoy using your monitoring tools!
+In the **Connections/Data Sources** section, register Prometheus and Loki. For Loki, use the URL: `http://loki:3100`, and for Prometheus, use: `http://prometheus:9090`. After entering the URLs, click **Save & Test** for each source. You can now create dashboards, view logs, monitor performance, and more. Enjoy using your monitoring tools!
 
 ## Notes
 
@@ -47,3 +69,4 @@ In the **Data Sources** section, register Prometheus and Loki. For Loki, use the
 ## Known Issues
 
 - If the application is running locally (outside of Docker), you will not be able to use Prometheus to monitor performance or other metrics. This is due to a current limitation where the Prometheus container cannot access the host machine's URL via the local IP.
+- To switch between the Docker and local setups, update the environment file, remove the containers, and then restart them.
