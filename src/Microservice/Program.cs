@@ -5,6 +5,7 @@ using Microservice.Api.Configurations;
 using Microservice.Api.Extensions;
 using Microsoft.OpenApi.Models;
 using Prometheus;
+using Scalar.AspNetCore;
 using Serilog;
 #pragma warning restore SA1200 // Using directive should appear within a namespace declaration
 
@@ -25,8 +26,6 @@ builder.Services.AddApiVersioning(options =>
        options.SubstituteApiVersionInUrl = true;
    });
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
    {
@@ -42,14 +41,17 @@ app.UseHttpMetrics();
 
 app.UseRequestResponseLogging();
 LogConfiguration.Initialize(builder.Configuration);
-
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+app.UseSwagger(c =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Solution Template - V1");
-    options.SwaggerEndpoint("/swagger/v2/swagger.json", "Solution Template - V2");
+    c.RouteTemplate = "openapi/{documentName}.json";
 });
 
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "Solution Template - V1");
+    options.SwaggerEndpoint("/openapi/v2.json", "Solution Template - V2");
+});
+app.MapScalarApiReference();
 app.UseHttpsRedirection();
 
 var summaries = new[]
