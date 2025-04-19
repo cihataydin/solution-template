@@ -1,5 +1,17 @@
-# Solution-Template
+# solution-template
 A template for building .NET microservices with best practices and common patterns.
+
+## Contents
+- [Initialize Application](#initialize-application)
+    - [On macOS/Linux](#on-macoslinux)
+    - [On Windows](#on-windows)
+    - [On Docker](#on-docker)
+- [API Interfaces](#api-interfaces)
+    - [Swagger UI](#swagger-ui)
+    - [Scalar UI](#scalar-ui)
+- [Monitoring Tools](#monitoring-tools)
+- [Deployment](#deployment)
+- [Technologies and References](#technologies-and-references)
 
 ## Initialize Application
 Follow these steps to initialize the application on your local machine.
@@ -21,7 +33,7 @@ Alternatively, run the application in watch mode
 ./init-app.sh watch
 ```
 ### On Windows
-Make sure the init-app.cmd script is in the project root then from PowerShell or Command Prompt run
+From PowerShell or Command Prompt run build command
 ```
 .\init-app.cmd build
 ```
@@ -39,10 +51,24 @@ Use the following command to start the application in Docker container.
 ```
 docker-compose --env-file src/Microservice/.env.docker -f ./src/Microservice/docker-compose.yml up --build -d
 ```
-Once the containers are up, access the Swagger UI at [http://localhost:8080/swagger](http://localhost:8080/swagger)
 
-## Render Deployment
-Render may be in sleep mode on the first request. You may need to wait for a few seconds. [Live Url](https://api-0oqs.onrender.com/swagger)
+## API Interfaces
+### Swagger UI
+- Local host url: [http://localhost:8000/swagger](http://localhost:8000/swagger)
+- Docker host url: [http://localhost:8080/swagger](http://localhost:8080/swagger)
+### Scalar UI
+- Local host url: [http://localhost:8000/scalar](http://localhost:8000/scalar)
+- Docker host url: [http://localhost:8080/scalar](http://localhost:8080/scalar)
 
-## Monitoring Tool
+## Monitoring Tools
 Enable real‑time metrics, logs, and health checks for the application by following the step‑by‑step setup guide. [Click for Guide](dockerfiles/monitoring/GUIDE.md)
+
+## Deployment
+Service may be in sleep mode on the first request. You may need to wait for a few seconds. [Live Demo Url](https://api-0oqs.onrender.com/scalar)
+
+## Technologies and References
+- [.NET](https://dotnet.microsoft.com/)
+- [Docker](https://www.docker.com/)
+- [Render](https://render.com/)
+- [Scalar](https://scalar.com/)
+- [Swagger](https://swagger.io/)
