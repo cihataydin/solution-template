@@ -70,7 +70,6 @@ After entering the URLs, click **Save & Test** for each source. You can now crea
 - To filter logs, use the appropriate label and value (e.g., `job:varlogs`). Ensure that the application stores logs in JSON format to display logs correctly.
 
 ## Known Issues
-- If the application is running locally (outside of Docker), you will not be able to use Prometheus to monitor performance or other metrics. This is due to a current limitation where the Prometheus container cannot access the host machine's URL via the local IP.
 - To switch between the Docker and local setups, update the environment file, remove the containers, and then restart them.
 
 ## Technologies and References

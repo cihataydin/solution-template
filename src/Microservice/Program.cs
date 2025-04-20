@@ -2,7 +2,7 @@
 using Asp.Versioning;
 using Asp.Versioning.Builder;
 using Microservice.Api.Configurations;
-using Microservice.Api.Extensions;
+using Microservice.Api.Middlewares;
 using Microsoft.OpenApi.Models;
 using Prometheus;
 using Scalar.AspNetCore;
@@ -39,7 +39,9 @@ var app = builder.Build();
 
 app.UseHttpMetrics();
 
-app.UseRequestResponseLogging();
+app.UseWhen(
+    ctx => !ctx.Request.Path.StartsWithSegments("/metrics"),
+    branch => branch.UseMiddleware<RequestResponseLoggingMiddleware>());
 LogConfiguration.Initialize(builder.Configuration);
 app.UseSwagger(c =>
 {
