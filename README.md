@@ -16,34 +16,34 @@ A template for building .NET microservices with best practices and common patter
 ## Initialize Application
 Follow these steps to initialize the application on your local machine.
 ### On macOS/Linux
-First, make sure the `init-app.sh` script has executable permissions
+First, make sure the `init.sh` script has executable permissions
 ```
-chmod +x init-app.sh
+chmod +x init.sh
 ```
 Then build the application using
 ```
-./init-app.sh build
+./init.sh build
 ```
 Start the application with
 ```
-./init-app.sh start
+./init.sh start
 ```
 Alternatively, run the application in watch mode
 ```
-./init-app.sh watch
+./init.sh watch
 ```
 ### On Windows
 From PowerShell or Command Prompt run build command
 ```
-.\init-app.cmd build
+.\init.cmd build
 ```
 Start the application
 ```
-.\init-app.cmd start
+.\init.cmd start
 ```
 Alternatively run the application in watch mode
 ```
-.\init-app.cmd watch
+.\init.cmd watch
 ```
 
 ### On Docker
