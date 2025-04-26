@@ -52,9 +52,9 @@ docker network create prometheus-net
 docker volume create shared-logs
 ```
 ## Initialize the Monitoring Tools
-We are now ready to run the Docker Compose file. Please execute the following command within the `monitoring` directory.
+We are now ready to run the Docker Compose file. Please execute the following command.
 ```
-docker-compose up -d
+docker-compose -f dockerfiles/monitoring/docker-compose.yml up -d
 ```
 
 ## Configure Grafana
