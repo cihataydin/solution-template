@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-PROJECT="src/Microservice/Microservice.csproj"
+PROJECT="src/Api/Microservice.csproj"
 CMD=$1
 
 case "$CMD" in

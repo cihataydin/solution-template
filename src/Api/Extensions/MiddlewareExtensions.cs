@@ -1,6 +1,6 @@
-namespace Microservice.Api.Extensions
+namespace Api.Extensions
 {
-    using Microservice.Api.Middlewares;
+    using Api.Middlewares;
 
     /// <summary>
     /// Represents the middleware extensions.

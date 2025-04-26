@@ -5,8 +5,8 @@ services:
     container_name: api
     image: ${HUB_IMAGE:?Error}
     build:
-      context: .
-      dockerfile: Dockerfile 
+      context: ./src/
+      dockerfile: ./Api/Dockerfile 
     ports:
       - "8080:80"
     environment:

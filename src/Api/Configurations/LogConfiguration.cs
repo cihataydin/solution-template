@@ -1,6 +1,6 @@
-﻿namespace Microservice.Api.Configurations
+﻿namespace Api.Configurations
 {
-    using Microservice.Domain.Constants;
+    using Domain.Constants;
     using Serilog;
     using Serilog.Events;
     using Serilog.Formatting.Json;

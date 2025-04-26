@@ -21,6 +21,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+
+    <ProjectReference Include="../Domain/Domain.csproj" />
+    
+    <ProjectReference Include="../Infra/Infra.csproj" />
   
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
 

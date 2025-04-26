@@ -1,4 +1,4 @@
-namespace Microservice.Domain.Constants
+namespace Domain.Constants
 {
     /// <summary>
     /// Represents the configuration constant.

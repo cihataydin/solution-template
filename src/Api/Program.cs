@@ -1,8 +1,8 @@
 #pragma warning disable SA1200 // Using directive should appear within a namespace declaration
+using Api.Configurations;
+using Api.Middlewares;
 using Asp.Versioning;
 using Asp.Versioning.Builder;
-using Microservice.Api.Configurations;
-using Microservice.Api.Middlewares;
 using Microsoft.OpenApi.Models;
 using Prometheus;
 using Scalar.AspNetCore;

@@ -49,7 +49,7 @@ Alternatively run the application in watch mode
 ### On Docker
 Use the following command to start the application in Docker container.
 ```
-docker-compose --env-file src/Microservice/.env.docker -f ./src/Microservice/docker-compose.yml up --build -d
+docker-compose --env-file .env.docker up --build -d
 ```
 
 ## API Interfaces

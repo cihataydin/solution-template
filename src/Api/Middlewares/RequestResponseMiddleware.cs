@@ -1,7 +1,7 @@
-namespace Microservice.Api.Middlewares
+namespace Api.Middlewares
 {
     using System.Text;
-    using Microservice.Domain.Constants;
+    using Domain.Constants;
     using Newtonsoft.Json;
     using Serilog;
 

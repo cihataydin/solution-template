@@ -1,4 +1,4 @@
-namespace Microservice.Api.Controllers.V2
+namespace Api.Controllers.V2
 {
     using Asp.Versioning;
     using Microsoft.AspNetCore.Mvc;

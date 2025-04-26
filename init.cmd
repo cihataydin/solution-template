@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set PROJECT=src\Microservice\Microservice.csproj
+set PROJECT=src\Api\Microservice.csproj
 if "%1"=="build" (
   dotnet build %PROJECT% --configuration Development
   goto :eof
