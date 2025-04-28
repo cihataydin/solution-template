@@ -3,6 +3,10 @@ using Api.Configurations;
 using Api.Middlewares;
 using Asp.Versioning;
 using Asp.Versioning.Builder;
+using Domain.Interfaces;
+using Infra.Data;
+using Infra.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Prometheus;
 using Scalar.AspNetCore;
@@ -12,6 +16,11 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services
+    .AddDbContext<DataContext>(opts => opts.UseInMemoryDatabase("DemoDb"))
+    .AddScoped(typeof(IRepository<>), typeof(Repository<>))
+    .AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddApiVersioning(options =>
    {
