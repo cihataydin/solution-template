@@ -72,3 +72,6 @@ Service may be in sleep mode on the first request. You may need to wait for a fe
 - [Render](https://render.com/)
 - [Scalar](https://scalar.com/)
 - [Swagger](https://swagger.io/)
+
+## License
+solution-template is licensed under the [MIT](LICENSE) license.
