@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace Infra.Repositories;
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, new()
 {
     private readonly DataContext _dataContext;
     private readonly DbSet<TEntity> _dbSet;
@@ -18,61 +18,103 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         _dbSet = dataContext.Set<TEntity>();
     }
 
-    public IQueryable<TEntity> Query(bool asNoTracking = true) => (asNoTracking ? _dbSet.AsNoTracking() : _dbSet).AsQueryable();
+    public IQueryable<TEntity> Query(bool asNoTracking = true) =>
+        asNoTracking ? _dbSet.AsNoTracking() : _dbSet.AsQueryable();
 
     public Task<TEntity?> GetByIdAsync<TKey>(TKey id, CancellationToken cancellationToken = default)
-    {
-        return _dbSet.FindAsync(new object?[] { id }!, cancellationToken).AsTask();
-    }
+        => _dbSet.FindAsync(new object?[] { id }!, cancellationToken).AsTask();
 
-    public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default)
+    public Task<List<TEntity>> ListAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        bool asNoTracking = true,
+        CancellationToken cancellationToken = default)
     {
-        IQueryable<TEntity> query = _dbSet;
-        if (predicate is not null) query = query.Where(predicate);
+        IQueryable<TEntity> query = Query(asNoTracking);
+        if (predicate != null) query = query.Where(predicate);
         return query.ToListAsync(cancellationToken);
     }
 
-    public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        => _dbSet.AnyAsync(predicate, cancellationToken);
+
+    public Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default)
+        => predicate == null
+            ? _dbSet.CountAsync(cancellationToken)
+            : _dbSet.CountAsync(predicate, cancellationToken);
+
+    public TEntity Add(TEntity entity)
+        => _dbSet.Add(entity).Entity;
+
+    public async Task<TEntity> AddAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
+        => (await _dbSet.AddAsync(entity, cancellationToken)).Entity;
+
+    public void AddRange(params TEntity[] entities)
+        => _dbSet.AddRange(entities);
+
+    public void AddRange(IEnumerable<TEntity> entities)
+        => _dbSet.AddRange(entities);
+
+    public Task AddRangeAsync(params TEntity[] entities)
+        => _dbSet.AddRangeAsync(entities);
+
+    public Task AddRangeAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+        => _dbSet.AddRangeAsync(entities, cancellationToken);
+
+    public TEntity Attach(TEntity entity)
+        => _dbSet.Attach(entity).Entity;
+
+    public void AttachRange(params TEntity[] entities)
+        => _dbSet.AttachRange(entities);
+
+    public void AttachRange(IEnumerable<TEntity> entities)
+        => _dbSet.AttachRange(entities);
+
+    public TEntity Update(TEntity entity)
+        => _dbSet.Update(entity).Entity;
+
+    public void UpdateRange(params TEntity[] entities)
+        => _dbSet.UpdateRange(entities);
+
+    public void UpdateRange(IEnumerable<TEntity> entities)
+        => _dbSet.UpdateRange(entities);
+
+    public TEntity Remove(TEntity entity)
+        => _dbSet.Remove(entity).Entity;
+
+    public void RemoveRange(params TEntity[] entities)
+        => _dbSet.RemoveRange(entities);
+
+    public void RemoveRange(IEnumerable<TEntity> entities)
+        => _dbSet.RemoveRange(entities);
+
+    public Task<int> ExecuteDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        => _dbSet.Where(predicate).ExecuteDeleteAsync(cancellationToken);
+
+    public Task<int> ExecuteUpdateAsync(
+        Expression<Func<TEntity, bool>> predicate,
+        object updateDefinition,
+        CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddAsync(entity, cancellationToken);
-
-        return entity;
-    }
-
-    public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
-    {
-        _dbSet.Update(entity);
-
-        return Task.CompletedTask;
-    }
-
-    public Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
-    {
-        _dbSet.Remove(entity);
-
-        return Task.CompletedTask;
-    }
-
-    public Task<int> DeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
-    {
-        return _dbSet.Where(predicate).ExecuteDeleteAsync(cancellationToken);
-    }
-
-    public Task<int> UpdateAsync(Expression<Func<TEntity, bool>> predicate, object updateDefinition, CancellationToken cancellationToken = default)
-    {
-        if (updateDefinition is not Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> expression)
+        if (updateDefinition is not Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> updateExpression)
         {
-            throw new InvalidOperationException($"Invalid update definition for type '{typeof(TEntity).Name}'. Expected an expression of type Expression<Func<SetPropertyCalls<{typeof(TEntity).Name}>, SetPropertyCalls<{typeof(TEntity).Name}>>>.");
+            throw new ArgumentException("Invalid update expression for EF Core", nameof(updateDefinition));
         }
 
-        return _dbSet.Where(predicate).ExecuteUpdateAsync(expression, cancellationToken);
+        return _dbSet.Where(predicate).ExecuteUpdateAsync(updateExpression, cancellationToken);
     }
+
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => _dataContext.SaveChangesAsync(cancellationToken);
 
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.Exchange(ref _disposed, 1) == 0)
         {
             await _dataContext.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 }

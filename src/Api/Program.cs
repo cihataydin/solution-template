@@ -19,8 +19,7 @@ builder.Services.AddControllers();
 
 builder.Services
     .AddDbContext<DataContext>(opts => opts.UseInMemoryDatabase("DemoDb"))
-    .AddScoped(typeof(IRepository<>), typeof(Repository<>))
-    .AddScoped<IUnitOfWork, UnitOfWork>();
+    .AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddApiVersioning(options =>
    {
