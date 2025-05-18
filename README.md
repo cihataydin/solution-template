@@ -12,6 +12,7 @@ A template for building .NET microservices with best practices and common patter
 - [Monitoring Tools](#monitoring-tools)
 - [Deployment](#deployment)
 - [Technologies and References](#technologies-and-references)
+- [License](#license)
 
 ## Initialize Application
 Follow these steps to initialize the application on your local machine.
