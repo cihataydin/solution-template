@@ -11,7 +11,7 @@ public class DataContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.LogTo(Log.Logger.Information);
+        optionsBuilder.LogTo(message => Log.Information(message));
         base.OnConfiguring(optionsBuilder);
     }
 
