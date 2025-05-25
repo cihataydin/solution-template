@@ -31,8 +31,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
-      primary:
-        condition: service_healthy
+      - primary
     volumes:
       - replica1-data:/var/lib/postgresql/data
     command: >
@@ -61,8 +60,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
-      primary:
-        condition: service_healthy
+      - primary
     volumes:
       - replica2-data:/var/lib/postgresql/data
     command: >
@@ -84,7 +82,7 @@ services:
       - pgnet
 
   pgpool:
-    image: bitnami/pgpool:latest
+    image: bitnami/pgpool:4
     container_name: pgpool
     restart: always
     ports:
@@ -99,12 +97,9 @@ services:
       - PGPOOL_ADMIN_USERNAME=${PGPOOL_ADMIN_USERNAME}
       - PGPOOL_ADMIN_PASSWORD=${PGPOOL_ADMIN_PASSWORD}
     depends_on:
-      primary:
-        condition: service_healthy
-      replica1:
-        condition: service_started
-      replica2:
-        condition: service_started
+      - primary
+      - replica1
+      - replica2
     volumes:
       - ./pgpool/pgpool.conf:/opt/bitnami/pgpool/conf/pgpool.conf
     networks:

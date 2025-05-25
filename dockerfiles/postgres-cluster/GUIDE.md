@@ -40,7 +40,7 @@ docker network create pgnet && docker compose up --build -d
 
 ```bash
 chmod +x test.sh
-````
+```
 
 ```bash
 ./test.sh
