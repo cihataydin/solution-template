@@ -1,0 +1,115 @@
+version: "3.9"
+
+services:
+  primary:
+    image: postgres:16
+    container_name: pg-primary
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - primary-data:/var/lib/postgresql/data
+      - ./primary/postgres.conf:/etc/postgresql/postgresql.conf
+      - ./primary/init.sh:/docker-entrypoint-initdb.d/init.sh
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - pgnet
+
+  replica1:
+    image: postgres:16
+    container_name: pg-replica-1
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - primary
+    volumes:
+      - replica1-data:/var/lib/postgresql/data
+    command: >
+      bash -c "
+        echo '*:*:*:${POSTGRES_USER}:${POSTGRES_PASSWORD}' > /var/lib/postgresql/.pgpass &&
+        chown postgres:postgres /var/lib/postgresql/.pgpass &&
+        chmod 600 /var/lib/postgresql/.pgpass &&
+        rm -rf /var/lib/postgresql/data/* &&
+        until pg_isready -h primary -p 5432 -U ${POSTGRES_USER}; do
+          echo 'Waiting for primary...';
+          sleep 2;
+        done &&
+        gosu postgres pg_basebackup -h primary -D /var/lib/postgresql/data -U ${POSTGRES_USER} -Fp -Xs -P -R &&
+        chmod 700 /var/lib/postgresql/data &&
+        chown -R postgres:postgres /var/lib/postgresql/data &&
+        exec gosu postgres postgres
+      "
+    networks:
+      - pgnet
+
+  replica2:
+    image: postgres:16
+    container_name: pg-replica-2
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - primary
+    volumes:
+      - replica2-data:/var/lib/postgresql/data
+    command: >
+      bash -c "
+        echo '*:*:*:${POSTGRES_USER}:${POSTGRES_PASSWORD}' > /var/lib/postgresql/.pgpass &&
+        chown postgres:postgres /var/lib/postgresql/.pgpass &&
+        chmod 600 /var/lib/postgresql/.pgpass &&
+        rm -rf /var/lib/postgresql/data/* &&
+        until pg_isready -h primary -p 5432 -U ${POSTGRES_USER}; do
+          echo 'Waiting for primary...';
+          sleep 2;
+        done &&
+        gosu postgres pg_basebackup -h primary -D /var/lib/postgresql/data -U ${POSTGRES_USER} -Fp -Xs -P -R &&
+        chmod 700 /var/lib/postgresql/data &&
+        chown -R postgres:postgres /var/lib/postgresql/data &&
+        exec gosu postgres postgres
+      "
+    networks:
+      - pgnet
+
+  pgpool:
+    image: bitnami/pgpool:4
+    container_name: pgpool
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      - PGPOOL_BACKEND_NODES=0:pg-primary:5432,1:pg-replica-1:5432,2:pg-replica-2:5432
+      - PGPOOL_ENABLE_LOAD_BALANCING=yes
+      - PGPOOL_SR_CHECK_USER=${POSTGRES_USER}
+      - PGPOOL_SR_CHECK_PASSWORD=${POSTGRES_PASSWORD}
+      - PGPOOL_POSTGRES_USERNAME=${POSTGRES_USER}
+      - PGPOOL_POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGPOOL_ADMIN_USERNAME=${PGPOOL_ADMIN_USERNAME}
+      - PGPOOL_ADMIN_PASSWORD=${PGPOOL_ADMIN_PASSWORD}
+    depends_on:
+      - primary
+      - replica1
+      - replica2
+    volumes:
+      - ./pgpool/pgpool.conf:/opt/bitnami/pgpool/conf/pgpool.conf
+    networks:
+      - pgnet
+
+volumes:
+  primary-data:
+  replica1-data:
+  replica2-data:
+
+networks:
+  pgnet:
+    external: true
