@@ -64,6 +64,30 @@ docker-compose --env-file .env.docker up --build -d
 ## Monitoring Tools
 Enable real‑time metrics, logs, and health checks for the application by following the step‑by‑step setup guide. [Click for Guide](dockerfiles/monitoring/GUIDE.md)
 
+## Migration
+
+1. **Install the EF Core CLI tool (dotnet-ef)**  
+   ```bash
+   dotnet tool install --global dotnet-ef
+
+This command adds the EF Core command-line tools to your system globally.
+
+2. **Verify the installation**
+    ```bash
+    dotnet ef --version
+If you see a version number, the tool has been installed successfully.
+
+3. **Create a new migration**
+    ```bash
+    dotnet ef migrations add InitialMigration --context DataContext --project src/Infra
+- --context DataContext: Specifies which DbContext to use when generating the migration.
+- --project src/Infra: Specifies the project folder where the migration files will be created.
+
+4. **Apply the migration to the database**
+    ```bash
+    dotnet ef database update --context DataContext --project src/Infra
+This command applies the latest migration to the database.
+
 ## Deployment
 Service may be in sleep mode on the first request. You may need to wait for a few seconds. [Live Demo Url](https://api-0oqs.onrender.com/scalar)
 

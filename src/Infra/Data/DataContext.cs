@@ -15,5 +15,5 @@ public class DataContext : DbContext
         base.OnConfiguring(optionsBuilder);
     }
 
-    public virtual DbSet<SampleEntity> Products => Set<SampleEntity>();
+    public virtual DbSet<SampleEntity> Samples => Set<SampleEntity>();
 }

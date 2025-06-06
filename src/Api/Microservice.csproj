@@ -18,6 +18,8 @@
 
     <NoWarn>$(NoWarn);SA1516</NoWarn>
 
+    <UserSecretsId>App-Development-Secrets</UserSecretsId>
+
   </PropertyGroup>
 
   <ItemGroup>
