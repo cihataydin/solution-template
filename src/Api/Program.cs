@@ -19,8 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services
-    .AddDbContext<DataContext>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("PgpoolDb")))
+builder.Services.AddDbContext<DataContext>(opts => opts.UseInMemoryDatabase("DemoDb"))
+
+    // .AddDbContext<DataContext>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("PgpoolDb")))
     .AddScoped(typeof(IRepository<>), typeof(Repository<>))
     .AddScoped(typeof(ISampleService), typeof(SampleService));
 
