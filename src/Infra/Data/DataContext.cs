@@ -6,5 +6,5 @@ public class DataContext : DbContext
 {
     public DataContext(DbContextOptions<DataContext> opts) : base(opts) { }
 
-    public virtual DbSet<SampleEntity> Products => Set<SampleEntity>();
+    public virtual DbSet<SampleEntity> Samples => Set<SampleEntity>();
 }

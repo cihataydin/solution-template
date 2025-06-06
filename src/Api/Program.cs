@@ -1,9 +1,11 @@
 #pragma warning disable SA1200 // Using directive should appear within a namespace declaration
 using Api.Configurations;
+using Api.MappingProfiles;
 using Api.Middlewares;
 using Asp.Versioning;
 using Asp.Versioning.Builder;
 using Domain.Interfaces;
+using Domain.Services;
 using Infra.Data;
 using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -18,8 +20,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services
-    .AddDbContext<DataContext>(opts => opts.UseInMemoryDatabase("DemoDb"))
-    .AddScoped(typeof(IRepository<>), typeof(Repository<>));
+    .AddDbContext<DataContext>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("PgpoolDb")))
+    .AddScoped(typeof(IRepository<>), typeof(Repository<>))
+    .AddScoped(typeof(ISampleService), typeof(SampleService));
+
+builder.Services.AddAutoMapper(typeof(SampleProfile).Assembly);
 
 builder.Services.AddApiVersioning(options =>
    {
@@ -82,7 +87,7 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi()
 .WithApiVersionSet(new ApiVersionSet(new ApiVersionSetBuilder(string.Empty), "weatherForecast"))
-.HasApiVersion(new ApiVersion(1, 0));
+.HasApiVersion(new ApiVersion(2, 0));
 
 app.MapControllers();
 app.MapMetrics();
