@@ -109,6 +109,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, n
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => _dataContext.SaveChangesAsync(cancellationToken);
 
+    public object Property(TEntity entity, string propertyName)
+    {
+        return EF.Property<object>(entity, propertyName);
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.Exchange(ref _disposed, 1) == 0)

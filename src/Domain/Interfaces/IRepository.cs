@@ -54,4 +54,6 @@ public interface IRepository<TEntity> : IAsyncDisposable where TEntity : class
     CancellationToken cancellationToken = default);
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    object Property(TEntity entity, string propertyName);
 }
