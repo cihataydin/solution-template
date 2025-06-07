@@ -1,7 +1,7 @@
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models.Request.Sample;
 using Domain.Models.Response.Sample;
@@ -22,24 +22,44 @@ public class SampleService : ISampleService
 
     public async Task<GetSampleResponseModel> GetSampleAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _repository.GetByIdAsync(id, cancellationToken);
+        var entity = await _repository.GetByIdAsync(id, cancellationToken) ?? throw new DomainException($"Sample with ID {id} not found.");
+
         return _mapper.Map<GetSampleResponseModel>(entity);
     }
 
-    public async Task<GetSamplesResponseModel> GetSamplesAsync(GetSamplesRequestModel request, CancellationToken cancellationToken = default)
+    public GetSamplesResponseModel GetSamples(GetSamplesRequestModel request)
     {
-        Expression<Func<SampleEntity, bool>> predicate = e => true;
-        if (!string.IsNullOrEmpty(request.Name))
-        {
-            predicate = e => e.Name == request.Name;
+        var query = _repository.Query();
 
-        }
-        var samples = await _repository.ListAsync(predicate, true, cancellationToken);
-        var response = new GetSamplesResponseModel
+        if (!string.IsNullOrWhiteSpace(request.Name))
+            query = query.Where(u => u.Name == request.Name);
+
+        if (!string.IsNullOrWhiteSpace(request.OrderBy))
         {
-            Samples = _mapper.Map<List<GetSampleResponseModel>>(samples)
-        };
-        return response;
+            query = request.Direction == SortDirection.Desc
+                ? query.OrderByDescending(u => _repository.Property(u, request.OrderBy))
+                : query.OrderBy(u => _repository.Property(u, request.OrderBy));
+        }
+        else
+        {
+            query = query.OrderByDescending(u => _repository.Property(u, nameof(SampleEntity.CreatedAt)));
+        }
+
+        var totalCount = query.Count();
+
+        var skip = (request.Page - 1) * request.Limit;
+        var samples = query
+                          .Skip(skip)
+                          .Take(request.Limit)
+                          .ToList();
+
+        var items = samples
+            .Select(u => _mapper.Map<GetSampleResponseModel>(u))
+            .ToList();
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)request.Limit);
+
+        return new GetSamplesResponseModel(items, totalCount, totalPages);
     }
 
     public async Task<CreateSampleResponseModel> CreateSampleAsync(CreateSampleRequestModel request, CancellationToken cancellationToken = default)

@@ -90,6 +90,8 @@ app.MapGet("/weatherforecast", () =>
 .WithApiVersionSet(new ApiVersionSet(new ApiVersionSetBuilder(string.Empty), "weatherForecast"))
 .HasApiVersion(new ApiVersion(2, 0));
 
+app.UseGlobalExceptionHandler();
+
 app.MapControllers();
 app.MapMetrics();
 

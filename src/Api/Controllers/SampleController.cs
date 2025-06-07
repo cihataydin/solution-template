@@ -30,9 +30,10 @@ namespace Api.Controllers
         /// </summary>
         /// <returns>The sample response model.</returns>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            var result = await this.sampleService.GetSamplesAsync(new GetSamplesRequestModel(), CancellationToken.None);
+            var result = this.sampleService.GetSamples(new GetSamplesRequestModel());
+
             return this.Ok(result);
         }
 
@@ -45,10 +46,6 @@ namespace Api.Controllers
         public async Task<IActionResult> Get(Guid id)
         {
             var result = await this.sampleService.GetSampleAsync(id, CancellationToken.None);
-            if (result == null)
-            {
-                return this.NotFound();
-            }
 
             return this.Ok(result);
         }
@@ -61,12 +58,13 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateSampleRequestModel request)
         {
-            if (request == null)
+            if (request is null)
             {
                 return this.BadRequest("Request cannot be null.");
             }
 
             var result = await this.sampleService.CreateSampleAsync(request, CancellationToken.None);
+
             return this.CreatedAtAction(nameof(this.Get), new { id = result.Id }, result);
         }
 
@@ -78,13 +76,14 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateSampleRequestModel request)
         {
-            if (request == null || request.Id == Guid.Empty)
+            if (request is null || request.Id == Guid.Empty)
             {
                 return this.BadRequest("Request cannot be null and ID must be provided.");
             }
 
             var result = await this.sampleService.UpdateSampleAsync(request, CancellationToken.None);
-            if (result == null)
+
+            if (result is null)
             {
                 return this.NotFound();
             }
@@ -106,6 +105,7 @@ namespace Api.Controllers
             }
 
             var result = await this.sampleService.DeleteSampleAsync(id, CancellationToken.None);
+
             if (!result)
             {
                 return this.NotFound();
