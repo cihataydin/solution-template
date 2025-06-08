@@ -13,15 +13,26 @@ public class SampleService : ISampleService
     private readonly IRepository<SampleEntity> _repository;
     private readonly IMapper _mapper;
 
+    private readonly ICacheManager _cacheManager;
+
     public SampleService(IRepository<SampleEntity> repository,
-    IMapper mapper)
+    IMapper mapper,
+    ICacheManager cacheManager)
     {
         _repository = repository;
         _mapper = mapper;
+        _cacheManager = cacheManager;
     }
 
     public async Task<GetSampleResponseModel> GetSampleAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        var cachedSample = await _cacheManager.GetAsync<SampleEntity>($"Sample_{id}");
+
+        if (cachedSample is not null)
+        {
+            return _mapper.Map<GetSampleResponseModel>(cachedSample);
+        }
+        
         var entity = await _repository.GetByIdAsync(id, cancellationToken) ?? throw new DomainException($"Sample with ID {id} not found.");
 
         return _mapper.Map<GetSampleResponseModel>(entity);
@@ -66,15 +77,24 @@ public class SampleService : ISampleService
     {
         var entity = _mapper.Map<SampleEntity>(request);
         var createdEntity = await _repository.AddAsync(entity, cancellationToken);
+
         await _repository.SaveChangesAsync(cancellationToken);
+
+        await _cacheManager.SetAsync($"Sample_{createdEntity.Id}", createdEntity);
+
         return _mapper.Map<CreateSampleResponseModel>(createdEntity);
     }
 
     public async Task<UpdateSampleResponseModel> UpdateSampleAsync(UpdateSampleRequestModel request, CancellationToken cancellationToken = default)
     {
         var entity = _mapper.Map<SampleEntity>(request);
+
         var updatedEntity = _repository.Update(entity);
+
         await _repository.SaveChangesAsync(cancellationToken);
+
+        await _cacheManager.SetAsync($"Sample_{updatedEntity.Id}", updatedEntity);
+
         return _mapper.Map<UpdateSampleResponseModel>(updatedEntity);
     }
 
@@ -84,6 +104,11 @@ public class SampleService : ISampleService
         if (entity == null) return false;
 
         _repository.Remove(entity);
-        return true && await _repository.SaveChangesAsync(cancellationToken) > 0;
+
+        var result = await _repository.SaveChangesAsync(cancellationToken);
+
+        await _cacheManager.RemoveAsync($"Sample_{id}");
+
+        return result > 0;
     }
 }

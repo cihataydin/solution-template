@@ -6,6 +6,7 @@ using Asp.Versioning;
 using Asp.Versioning.Builder;
 using Domain.Interfaces;
 using Domain.Services;
+using Infra.Cache;
 using Infra.Data;
 using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,15 @@ builder.Services.AddSwaggerGen(c =>
    });
 
 builder.Host.UseSerilog();
+
+builder.Services.AddMemoryCache();
+builder.Services.AddStackExchangeRedisCache(opts =>
+{
+    opts.Configuration = builder.Configuration.GetConnectionString("Redis");
+    opts.InstanceName = "SolutionTemplate:";
+});
+builder.Services.Configure<CacheManagerOptions>(builder.Configuration.GetSection("CacheOptions"));
+builder.Services.AddSingleton<ICacheManager, CacheManager>();
 
 var app = builder.Build();
 
