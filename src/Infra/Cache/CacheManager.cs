@@ -8,6 +8,7 @@ namespace Infra.Cache;
 
 public class CacheManagerOptions
 {
+    public bool UseDistributedCache { get; set; } = true;
     public TimeSpan MemoryCacheDuration { get; set; } = TimeSpan.FromMinutes(2);
     public TimeSpan DistributedCacheDuration { get; set; } = TimeSpan.FromMinutes(10);
     public JsonSerializerOptions? JsonOptions { get; set; } 
@@ -34,6 +35,9 @@ public class CacheManager: ICacheManager
         if (_memoryCache.TryGetValue(key, out T? value))
             return value;
 
+        if(!_options.UseDistributedCache)
+            return default;
+
         var serialized = await _distributedCache.GetStringAsync(key);
         if (serialized is not null)
         {
@@ -48,13 +52,17 @@ public class CacheManager: ICacheManager
     public async Task RemoveAsync(string key)
     {
         _memoryCache.Remove(key);
-        await _distributedCache.RemoveAsync(key);
+        
+        if (_options.UseDistributedCache)
+            await _distributedCache.RemoveAsync(key);
     }
 
     public async Task SetAsync<T>(string key, T value)
     {
         this.SetMemory(key, value);
-        await this.SetDistributedAsync(key, value);
+
+        if (_options.UseDistributedCache)
+            await this.SetDistributedAsync(key, value);
     }
     
     private void SetMemory<T>(string key, T value, TimeSpan? duration = null)
