@@ -24,6 +24,8 @@
 
   <ItemGroup>
 
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.5" />
+
     <ProjectReference Include="../Domain/Domain.csproj" />
     
     <ProjectReference Include="../Infra/Infra.csproj" />
